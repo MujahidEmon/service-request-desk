@@ -1,15 +1,10 @@
+import Homepage from "@/pages/Homepage/Homepage";
 import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16  sm:items-start">
-        <h1 className="text-6xl font-bold   sm:text-5xl">
-          Welcome to Service Request Desk!
-          
-        </h1>
-        <button className='btn btn-primary'>Take a Tour</button>
-      </main>
+    <div className='max-w-7xl mx-auto flex flex-col items-center justify-center gap-4'>
+        <Homepage></Homepage>
     </div>
   );
 }
