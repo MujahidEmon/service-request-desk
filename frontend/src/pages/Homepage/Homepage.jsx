@@ -3,6 +3,7 @@ import React from 'react';
 import supportIcon from '../../../public/support.jpg';
 import requesterIcon from '../../../public/requester.jpg';
 import { FaInfo } from 'react-icons/fa';
+import Link from 'next/link';
 
 const Homepage = () => {
     return (
@@ -24,7 +25,9 @@ const Homepage = () => {
                         <h2 className="card-title">I'm a Requester</h2>
                         <p className="text-black/70">Create and Track Your Service Requests</p>
                         <div className="card-actions">
-                            <button className="btn btn-primary">Continue as a Requester</button>
+                            <Link href="/create-request" className="btn btn-primary">
+                                Continue as a Requester
+                            </Link>
                         </div>
                     </div>
                 </div>
