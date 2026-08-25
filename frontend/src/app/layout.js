@@ -1,6 +1,6 @@
 import { Geist, Geist_Mono, Quicksand } from "next/font/google";
 import "./globals.css";
-
+import { Toaster } from 'react-hot-toast';
 
 
 const quickSand = Quicksand({
@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${quickSand.className} h-full bg-custom-1 antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">{children}<Toaster /></body>
     </html>
   );
 }
