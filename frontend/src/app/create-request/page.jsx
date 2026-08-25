@@ -13,7 +13,7 @@ export default function CreateRequestPage() {
 
         <div className="rounded-2xl bg-white border border-base-200 overflow-hidden">
           <div className="border-b text-center border-slate-100 px-5 py-5 sm:px-7">
-            <h1 className="text-xl md:text-2xl font-bold text-slate-900">
+            <h1 className="text-xl md:text-2xl font-bold text-primary">
               Create New Request
             </h1>
             <p className="mt-1 text-xs text-slate-500">

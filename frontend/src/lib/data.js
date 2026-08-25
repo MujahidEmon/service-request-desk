@@ -102,21 +102,21 @@ export function getRequestById(id) {
 
 export function getStatusClass(status) {
   const map = {
-    Open: "status-open",
-    "In Progress": "status-progress",
-    "Waiting for User": "status-waiting",
-    Resolved: "status-resolved",
-    Closed: "status-closed",
+    Open: "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200",
+    "In Progress": "bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-200",
+    "Waiting for User": "bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-200",
+    Resolved: "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200",
+    Closed: "bg-slate-100 text-slate-600 ring-1 ring-inset ring-slate-200",
   };
-  return map[status] ?? "status-closed";
+  return map[status] ?? "bg-slate-100 text-slate-600 ring-1 ring-inset ring-slate-200";
 }
 
 export function getPriorityClass(priority) {
   const map = {
-    Low: "priority-low",
-    Medium: "priority-medium",
-    High: "priority-high",
-    Urgent: "priority-urgent",
+    Low: "bg-emerald-50 text-emerald-700",
+    Medium: "bg-amber-50 text-amber-700",
+    High: "bg-red-50 text-red-600",
+    Urgent: "bg-red-100 text-red-700",
   };
-  return map[priority] ?? "priority-medium";
+  return map[priority] ?? "bg-amber-50 text-amber-700";
 }

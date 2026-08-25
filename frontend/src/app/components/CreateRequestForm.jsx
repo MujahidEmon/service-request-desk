@@ -142,7 +142,7 @@ export default function CreateRequestForm() {
           </div>
         </div>
 
-        <div className="lg:max-w-[50%] max-w-full">
+        <div className="lg:max-w-[50%] max-w-[80%]">
           <label className="mb-1.5 block  font-semibold text-slate-700">
             Priority <span className="text-red-500">*</span>
           </label>
