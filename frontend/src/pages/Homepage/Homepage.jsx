@@ -45,7 +45,7 @@ const Homepage = () => {
                         <h2 className="card-title">I'm a Support Person</h2>
                         <p className="text-black/70">Manage and Resolve Service Requests</p>
                         <div className="card-actions">
-                            <button className="btn btn-primary">Continue as a Support</button>
+                            <Link href={'/provider'} className="btn btn-primary">Continue as a Support</Link>
                         </div>
                     </div>
                 </div>
