@@ -3,6 +3,8 @@ import PageHeader from "../components/PageHeader";
 import ProviderShell from "../components/ProviderShell";
 import TopBar from "../components/TopBar";
 import StatCard from "../components/StatCard";
+import RequestTable from "../components/RequestTable";
+import { requests } from "@/lib/data";
 
 export default function ProviderDashboardPage() {
   return (
@@ -22,7 +24,20 @@ export default function ProviderDashboardPage() {
           <StatCard label="Waiting for User" value="14"card='even' />
         </div>
 
-        
+        <section className="srd-card srd-shadow mt-5 overflow-hidden">
+            <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+              <div>
+                <h2 className="text-md font-extrabold text-slate-900">Recent Requests</h2>
+                <p className="mt-0.5 text-sm text-slate-500">
+                  Latest activity from the support queue
+                </p>
+              </div>
+              <Link href="/provider/requests" className="srd-primary-button h-8">
+                View All Requests
+              </Link>
+            </div>
+            <RequestTable requests={requests} />
+          </section>
       </div>
     </ProviderShell>
   );

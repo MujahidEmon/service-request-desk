@@ -39,7 +39,7 @@ export default function CreateRequestForm() {
             Title <span className="text-red-500">*</span>
           </label>
           <input
-            className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:ring-4 focus:ring-blue-500/10"
+            className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-500 focus:ring-4 focus:ring-blue-500/10"
             placeholder="Enter a short title"
             maxLength={100}
             {...register("title", {
@@ -68,7 +68,7 @@ export default function CreateRequestForm() {
             Description <span className="text-red-500">*</span>
           </label>
           <textarea
-            className="min-h-32 w-full resize-y rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+            className="min-h-32 w-full resize-y rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-500 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
             placeholder="Describe your issue or request in detail..."
             maxLength={1000}
             {...register("description", {
@@ -99,7 +99,7 @@ export default function CreateRequestForm() {
               Requester Name <span className="text-red-500">*</span>
             </label>
             <input
-              className=" h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+              className=" h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-500 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
               placeholder="Your full name"
               maxLength={60}
               {...register("requesterName", {

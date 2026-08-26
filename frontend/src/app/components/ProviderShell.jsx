@@ -52,11 +52,11 @@ export default function ProviderShell({ children }) {
           })}
         </nav>
 
-        <div className="border-t border-white/10 p-4 text-xs   leading-4 text-slate-400">
+        <div className="border-t border-white/10 p-4 text-xs   leading-4 text-slate-500">
           Internal support workspace
         </div>
       </aside>
-
+      
       <main className="min-h-screen lg:pl-55">{children}</main>
     </div>
   );
