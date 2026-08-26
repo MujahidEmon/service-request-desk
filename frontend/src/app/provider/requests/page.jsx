@@ -1,5 +1,6 @@
 import PageHeader from "@/app/components/PageHeader";
 import ProviderShell from "@/app/components/ProviderShell";
+import RequestFilters from "@/app/components/RequestFilters";
 import TopBar from "@/app/components/TopBar";
 
 
@@ -20,7 +21,7 @@ export default function ProviderRequestsPage() {
         />
 
         <section className="srd-card srd-shadow overflow-hidden">
-            Filters
+            <RequestFilters></RequestFilters>
         </section>
       </div>
     </ProviderShell>

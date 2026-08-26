@@ -47,7 +47,7 @@ export default function RequestTable({ requests }) {
               <td className="px-4 py-3">
                 <StatusBadge status={request.status} />
               </td>
-              <td className="px-4 py-3 text-xs text-base-content">
+              <td className="px-4 py-3 text-sm text-base-content">
                 {request.assignedPerson ?? "—"}
               </td>
               <td className="px-4 py-3 text-xs text-slate-500">
