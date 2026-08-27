@@ -18,10 +18,14 @@ import { getRequestById, statuses, priorities, supportPeople } from "@/lib/data"
 import { PriorityBadge, StatusBadge } from "../StatusBadge";
 import ReqDetails from "./ReqDetails";
 import ActionButton from "./ActionButton";
+import Modal from "../Modal";
+import ModalActions from "./ModalActions";
 export default function ProviderRequestDetails({ id }) {
   const base = getRequestById(id);
   const [request, setRequest] = useState(base);
-  
+  const [modal, setModal] = useState(null);
+  const [note, setNote] = useState("");
+
 
   const canClose = request.status === "Resolved";
 
@@ -29,6 +33,22 @@ export default function ProviderRequestDetails({ id }) {
     setRequest((current) => ({ ...current, [field]: value }));
   };
 
+  const addNote = () => {
+    if (!note.trim()) return;
+    setRequest((current) => ({
+      ...current,
+      notes: [
+        ...(current.notes || []),
+        {
+          text: note.trim(),
+          author: "Hasan Mahmud",
+          time: "Just now",
+        },
+      ],
+    }));
+    setNote("");
+    setModal(null);
+  };
 
 
   return (
@@ -120,7 +140,7 @@ export default function ProviderRequestDetails({ id }) {
 
             <div className="border-t border-slate-100 p-5 sm:p-7">
               <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-sm font-extrabold text-slate-900">
+                <h2 className="text-md font-extrabold text-slate-900">
                   Internal Notes
                 </h2>
                 <button
@@ -140,10 +160,10 @@ export default function ProviderRequestDetails({ id }) {
                       className="rounded-xl border border-slate-100 bg-slate-50 p-3"
                     >
                       <div className="flex items-center justify-between gap-3">
-                        <p className="text-[10px] font-bold text-slate-700">
+                        <p className="text-sm font-bold text-slate-700">
                           {item.author}
                         </p>
-                        <span className="text-[9px] text-base-content">{item.time}</span>
+                        <span className="text-sm text-base-content">{item.time}</span>
                       </div>
                       <p className="mt-1 text-xs leading-5 text-slate-600">{item.text}</p>
                     </div>
@@ -164,28 +184,33 @@ export default function ProviderRequestDetails({ id }) {
               <ActionButton
                 icon={HiOutlineUserPlus}
                 label="Assign / Reassign"
+                onClick={() => setModal("assign")}
                 disabled={request.status === "Closed"}
               />
               <ActionButton
                 icon={HiOutlineFlag}
                 label="Change Priority"
+                onClick={() => setModal("priority")}
                 disabled={request.status === "Closed"}
               />
               <ActionButton
                 icon={HiOutlineAdjustmentsHorizontal}
                 label="Change Status"
+                onClick={() => setModal("status")}
                 disabled={request.status === "Closed"}
               />
               <ActionButton
                 icon={HiOutlineCheckCircle}
                 label="Resolve"
                 green
+                onClick={() => update("status", "Resolved")}
                 disabled={request.status === "Closed"}
               />
               <ActionButton
                 icon={HiOutlineLockClosed}
                 label="Close Request"
                 danger
+                onClick={() => canClose && update("status", "Closed")}
                 disabled={!canClose}
               />
             </div>
@@ -199,27 +224,88 @@ export default function ProviderRequestDetails({ id }) {
         </div>
       </div>
 
-     
+      {modal === "assign" && (
+        <Modal title="Assign / Reassign" onClose={() => setModal(null)}>
+          <label className="srd-label">Select Support Person <span className="text-red-500">*</span></label>
+          <select
+            className="srd-dropdown-select"
+            value={request.assignedPerson || ""}
+            onChange={(e) => update("assignedPerson", e.target.value || null)}
+          >
+            <option value="">Select person</option>
+            {supportPeople.map((person) => (
+              <option key={person.id}>{person.name}</option>
+            ))}
+          </select>
+          <ModalActions
+            onCancel={() => setModal(null)}
+            onConfirm={() => setModal(null)}
+            label="Assign"
+          />
+        </Modal>
+      )}
+
+      {modal === "note" && (
+        <Modal title="Add Internal Note" onClose={() => setModal(null)}>
+          <label className="srd-label">Note <span className="text-red-500">*</span></label>
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            maxLength={500}
+            className="min-h-32 w-full resize-none rounded-lg border border-slate-200 p-3 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+            placeholder="Write your internal note here..."
+          />
+          <p className="mt-1 text-[9px] text-slate-400">{note.length}/500</p>
+          <ModalActions
+            onCancel={() => setModal(null)}
+            onConfirm={addNote}
+            label="Add Note"
+            disabled={!note.trim()}
+            icon={HiOutlinePaperAirplane}
+          />
+        </Modal>
+      )}
+
+      {modal === "priority" && (
+        <Modal title="Change Priority" onClose={() => setModal(null)}>
+          <label className="srd-label">Priority</label>
+          <select
+            className="srd-dropdown-select"
+            value={request.priority}
+            onChange={(e) => update("priority", e.target.value)}
+          >
+            {priorities.map((item) => <option key={item}>{item}</option>)}
+          </select>
+          <ModalActions onCancel={() => setModal(null)} onConfirm={() => setModal(null)} label="Save" />
+        </Modal>
+      )}
+
+      {modal === "status" && (
+        <Modal title="Change Status" onClose={() => setModal(null)}>
+          <label className="srd-label">Status</label>
+          <select
+            className="srd-dropdown-select"
+            value={request.status}
+            onChange={(e) => {
+              const next = e.target.value;
+              if (next !== "Closed" || request.status === "Resolved") {
+                update("status", next);
+              }
+            }}
+          >
+            {statuses.map((item) => (
+              <option
+                key={item}
+                disabled={item === "Closed" && request.status !== "Resolved"}
+              >
+                {item}
+              </option>
+            ))}
+          </select>
+          <ModalActions onCancel={() => setModal(null)} onConfirm={() => setModal(null)} label="Save" />
+        </Modal>
+      )}
+
     </ProviderShell>
-  );
-}
-
-
-function ModalActions({ onCancel, onConfirm, label, disabled, icon: Icon }) {
-  return (
-    <div className="mt-5 flex justify-end gap-2">
-      <button type="button" onClick={onCancel} className="srd-secondary-button h-9">
-        Cancel
-      </button>
-      <button
-        type="button"
-        onClick={onConfirm}
-        disabled={disabled}
-        className="srd-primary-button h-9"
-      >
-        {Icon && <Icon size={13} />}
-        {label}
-      </button>
-    </div>
   );
 }

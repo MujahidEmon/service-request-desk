@@ -78,3 +78,8 @@
 .srd-card {
   @apply rounded-2xl border border-slate-200 bg-white;
 }
+
+
+.srd-label {
+  @apply mb-1.5 block text-[12px] font-semibold text-slate-700;
+}
