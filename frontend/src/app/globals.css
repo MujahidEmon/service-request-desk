@@ -70,3 +70,11 @@
 .srd-dropdown-select {
   @apply h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10;
 }
+
+.srd-shadow {
+  box-shadow: 0 12px 32px rgba(20, 33, 61, 0.06);
+}
+
+.srd-card {
+  @apply rounded-2xl border border-slate-200 bg-white;
+}
