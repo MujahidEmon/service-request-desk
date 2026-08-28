@@ -19,9 +19,6 @@ app.get("/", (req, res) => {
   res.send("srd server is running");
 });
 
-app.listen(port, () => {
-  console.log(`srd server is running on port ${port}`);
-});
 
 async function startServer() {
   try {
@@ -34,9 +31,40 @@ async function startServer() {
 
     // get all requests
     app.get("/api/requests", async (req, res) => {
-      const cursor = reqCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
+      try {
+        const {search, status, priority, category, assignedPerson} = req.query;
+        const filter = {}
+
+        if(search){
+            const searchText = search.trim();
+
+            if(searchText){
+                filter.$or = [
+                    {
+                        title: {$regex: searchText,
+                            $options:"i"
+                        }
+                    },
+                    {
+                        description: {$regex: searchText, $options: "i"},
+                        
+                    },
+                    {
+                        requesterName: {$regex: searchText,
+                            $options: "i"
+                        }
+                    }
+                ]
+            }
+        }
+        
+        const requests = await reqCollection.find(filter).toArray();
+
+        res.status(200).send(requests);
+
+      } catch (error) {
+        
+      }
     });
 
 
@@ -44,7 +72,8 @@ async function startServer() {
 
 
 
-    
+
+
     app.listen(port, () => {
       console.log(`Server running at http://localhost:${port}`);
     });
