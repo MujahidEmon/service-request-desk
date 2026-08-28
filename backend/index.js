@@ -23,7 +23,10 @@ async function startServer() {
   try {
     await dbConnect();
     const reqCollection = await getDatabase().collection("requests");
+    const counterCollection = getDatabase().collection("counters");
 
+
+    
     // get all requests
     app.get("/api/requests", async (req, res) => {
       try {
@@ -219,45 +222,74 @@ async function startServer() {
           });
         }
 
-        const categories = ["Hardware","Software","Access","Network","Other"];
+        const categories = [
+          "Hardware",
+          "Software",
+          "Access",
+          "Network",
+          "Other",
+        ];
 
         if (!categories.includes(category)) {
           return res.status(400).json({
             success: false,
-            message: "Invalid category"
+            message: "Invalid category",
           });
         }
 
-        const priorities = ["Low", "Medium", 'High', "Urgent"]
-        if(!priorities.includes(priority)){
-            return res.status(400).json({
+        const priorities = ["Low", "Medium", "High", "Urgent"];
+        if (!priorities.includes(priority)) {
+          return res.status(400).json({
             success: false,
-            message: "Invalid priority"
+            message: "Invalid priority",
           });
         }
 
+        const currentYear = new Date().getFullYear();
+
+        const counterResult = await counterCollection.findOneAndUpdate(
+          {
+            _id: `request-${currentYear}`,
+          },
+          {
+            $inc: {
+              sequence: 1,
+            },
+          },
+          {
+            upsert: true,
+            returnDocument: "after",
+          },
+        );
+
+        const sequence = counterResult.sequence;
+
+        const requestNumber = `REQ-${currentYear}-${String(sequence).padStart(4, "0")}`;
 
         const newRequest = {
-            title: cleanTitle,
-            description: cleanDescription,
-            requesterName: cleanRequesterName,
-            category: category,
-            priority: priority,
-            status: 'Open',
-            assignedPerson: null,
-            internalNotes: [],
-            createdAt: new Date(),
-            updatedAt: new Date()
-        }
+          requestNumber,  
+          title: cleanTitle,
+          description: cleanDescription,
+          requesterName: cleanRequesterName,
+          category: category,
+          priority: priority,
+          status: "Open",
+          assignedPerson: null,
+          internalNotes: [],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
 
         const result = await reqCollection.insertOne(newRequest);
-        res.send(result,  {message: 'Request Created Successfully', status: 201})
-
+        res.send(result, {
+          message: "Request Created Successfully",
+          status: 201,
+        });
       } catch (error) {
         console.error(error);
         res.status(500).json({
           success: false,
-          message:"Failed to create request"
+          message: "Failed to create request",
         });
       }
     });
