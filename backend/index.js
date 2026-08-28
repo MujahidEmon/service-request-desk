@@ -143,6 +143,125 @@ async function startServer() {
       }
     });
 
+    // create requests
+    app.post("/api/requests", async (req, res) => {
+      try {
+        const { title, description, requesterName, category, priority } =
+          req.body;
+        if (
+          !title ||
+          !description ||
+          !requesterName ||
+          !category ||
+          !priority
+        ) {
+          return res.status(400).json({
+            success: false,
+            message:
+              "Title, description, requester name, category and priority are required",
+          });
+        }
+
+        if (
+          typeof title !== "string" ||
+          typeof description !== "string" ||
+          typeof requesterName !== "string"
+        ) {
+          return res.status(400).json({
+            success: false,
+            message: "Title, description and requester name must be text",
+          });
+        }
+
+        const cleanTitle = title.trim();
+        const cleanDescription = description.trim();
+        const cleanRequesterName = requesterName.trim();
+
+        if (cleanTitle.length < 3) {
+          return res.status(400).json({
+            success: false,
+            message: "Title must be at least 3 characters long",
+          });
+        }
+
+        if (cleanTitle.length > 100) {
+          return res.status(400).json({
+            success: false,
+            message: "Title cannot be longer than 100 characters",
+          });
+        }
+
+        if (cleanDescription.length < 10) {
+          return res.status(400).json({
+            success: false,
+            message: "Description must be at least 10 characters long",
+          });
+        }
+
+        if (cleanDescription.length > 2000) {
+          return res.status(400).json({
+            success: false,
+            message: "Description cannot be longer than 2000 characters",
+          });
+        }
+
+        if (cleanRequesterName.length < 2) {
+          return res.status(400).json({
+            success: false,
+            message: "Requester name must be at least 2 characters long",
+          });
+        }
+
+        if (cleanRequesterName.length > 100) {
+          return res.status(400).json({
+            success: false,
+            message: "Requester name cannot be longer than 100 characters",
+          });
+        }
+
+        const categories = ["Hardware","Software","Access","Network","Other"];
+
+        if (!categories.includes(category)) {
+          return res.status(400).json({
+            success: false,
+            message: "Invalid category"
+          });
+        }
+
+        const priorities = ["Low", "Medium", 'High', "Urgent"]
+        if(!priorities.includes(priority)){
+            return res.status(400).json({
+            success: false,
+            message: "Invalid priority"
+          });
+        }
+
+
+        const newRequest = {
+            title: cleanTitle,
+            description: cleanDescription,
+            requesterName: cleanRequesterName,
+            category: category,
+            priority: priority,
+            status: 'Open',
+            assignedPerson: null,
+            internalNotes: [],
+            createdAt: new Date(),
+            updatedAt: new Date()
+        }
+
+        const result = await reqCollection.insertOne(newRequest);
+        res.send(result,  {message: 'Request Created Successfully', status: 201})
+
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({
+          success: false,
+          message:"Failed to create request"
+        });
+      }
+    });
+
     app.listen(port, () => {
       console.log(`Server running at http://localhost:${port}`);
     });
