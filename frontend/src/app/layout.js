@@ -5,7 +5,6 @@ import QueryProvider from "@/providers/QueryProvider";
 
 
 const quickSand = Quicksand({
-  variable: "--font-quicksand",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });

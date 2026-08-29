@@ -1,7 +1,6 @@
-
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import ProviderShell from "../ProviderShell";
 import {
@@ -11,27 +10,49 @@ import {
   HiOutlineAdjustmentsHorizontal,
   HiOutlineCheckCircle,
   HiOutlineLockClosed,
-  HiOutlineTrash,
   HiOutlinePaperAirplane,
 } from "react-icons/hi2";
-import { getRequestById, statuses, priorities, supportPeople } from "@/lib/data";
-import { PriorityBadge, StatusBadge } from "../StatusBadge";
+import { statuses, priorities, supportPeople } from "@/lib/data";
+import { StatusBadge } from "../StatusBadge";
 import ReqDetails from "./ReqDetails";
 import ActionButton from "./ActionButton";
 import Modal from "../Modal";
 import ModalActions from "./ModalActions";
+import { getRequestById } from "@/services/requestApi";
+import { useQuery } from "@tanstack/react-query";
 export default function ProviderRequestDetails({ id }) {
-  const base = getRequestById(id);
-  const [request, setRequest] = useState(base);
   const [modal, setModal] = useState(null);
   const [note, setNote] = useState("");
 
+  const {
+    data: request = [],
+    isLoading,
+    isError,
+    error
+  } = useQuery({
+    queryKey: ["request", id],
+    queryFn: () => getRequestById(id),
+    enabled: !!id,
+  });
+  // console.log(data);
 
-  const canClose = request.status === "Resolved";
+  const formatDate = (date) => {
+  if (!date) return "—";
 
-  const update = (field, value) => {
-    setRequest((current) => ({ ...current, [field]: value }));
-  };
+  return new Date(date).toLocaleString("en-BD", {
+    timeZone: "Asia/Dhaka",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+};
+
+  const canClose = request?.status === "Resolved";
+
+  
 
   const addNote = () => {
     if (!note.trim()) return;
@@ -74,7 +95,7 @@ export default function ProviderRequestDetails({ id }) {
                     <StatusBadge status={request.status} />
                   </div>
                   <p className="mt-1 text-sm text-base-content">
-                    Created on {request.createdAt}
+                    Created on {formatDate(request.createdAt)}
                   </p>
                 </div>
               </div>
@@ -85,7 +106,7 @@ export default function ProviderRequestDetails({ id }) {
               <ReqDetails label="Status">
                 <select
                   value={request.status}
-                  onChange={(e) => update("status", e.target.value)}
+                  // onChange={(e) => update("status", e.target.value)}
                   className="srd-dropdown-select max-w-47"
                   disabled={request.status === "Closed"}
                 >
@@ -109,7 +130,7 @@ export default function ProviderRequestDetails({ id }) {
               <ReqDetails label="Priority">
                 <select
                   value={request.priority}
-                  onChange={(e) => update("priority", e.target.value)}
+                  // onChange={(e) => update("priority", e.target.value)}
                   className="srd-dropdown-select max-w-47"
                   disabled={request.status === "Closed"}
                 >
@@ -122,9 +143,6 @@ export default function ProviderRequestDetails({ id }) {
               <ReqDetails label="Assigned To" wide>
                 <select
                   value={request.assignedPerson || ""}
-                  onChange={(e) =>
-                    update("assignedPerson", e.target.value || null)
-                  }
                   className="srd-dropdown-select max-w-47"
                   disabled={request.status === "Closed"}
                 >
@@ -135,7 +153,7 @@ export default function ProviderRequestDetails({ id }) {
                 </select>
               </ReqDetails>
 
-              <ReqDetails label="Last Updated">{request.updatedAt}</ReqDetails>
+              <ReqDetails label="Last Updated">{formatDate(request.updatedAt)}</ReqDetails>
             </div>
 
             <div className="border-t border-slate-100 p-5 sm:p-7">
@@ -229,7 +247,7 @@ export default function ProviderRequestDetails({ id }) {
           <label className="srd-label">Select Support Person <span className="text-red-500">*</span></label>
           <select
             className="srd-dropdown-select"
-            value={request.assignedPerson || ""}
+            value={request?.assignedPerson || ""}
             onChange={(e) => update("assignedPerson", e.target.value || null)}
           >
             <option value="">Select person</option>
@@ -250,7 +268,7 @@ export default function ProviderRequestDetails({ id }) {
           <label className="srd-label">Note <span className="text-red-500">*</span></label>
           <textarea
             value={note}
-            onChange={(e) => setNote(e.target.value)}
+            // onChange={(e) => setNote(e.target.value)}
             maxLength={500}
             className="min-h-32 w-full resize-none rounded-lg border border-slate-200 p-3 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
             placeholder="Write your internal note here..."
@@ -258,7 +276,7 @@ export default function ProviderRequestDetails({ id }) {
           <p className="mt-1 text-[9px] text-slate-400">{note.length}/500</p>
           <ModalActions
             onCancel={() => setModal(null)}
-            onConfirm={addNote}
+            // onConfirm={addNote}
             label="Add Note"
             disabled={!note.trim()}
             icon={HiOutlinePaperAirplane}
