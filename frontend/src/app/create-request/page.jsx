@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { HiOutlineArrowLeft } from "react-icons/hi2";
 import TopBar from "../components/TopBar";
-import CreateRequestForm from "../components/CreateRequestForm";
+import CreateRequestForm from "./CreateRequestForm";
 
 export default function CreateRequestPage() {
   return (

@@ -35,7 +35,7 @@ export default function StatusCards() {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
         <StatCard label="Total Requests" value="..." card="odd" />
         <StatCard label="Open" value="..." card="even" />
         <StatCard label="In Progress" value="..." card="odd" />

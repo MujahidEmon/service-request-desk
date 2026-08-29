@@ -1,32 +1,31 @@
 'use client'
 import Link from "next/link";
 import { HiOutlineArrowRight } from "react-icons/hi2";
-import { PriorityBadge, StatusBadge } from "./StatusBadge";
+import { PriorityBadge, StatusBadge } from "../StatusBadge";
 import { useQuery } from "@tanstack/react-query";
 import { getRequests } from "@/services/requestApi";
 import { useState } from "react";
 
-export default function RequestTable() {
+export default function RequestFilterTable({ pagination, requests }) {
   const [page, setPage] = useState(1);
   const limit = 10;
 
-  const { isLoading, data, isError, error } = useQuery({
-    queryKey: ["requests", page],
-    queryFn: () => getRequests(page, limit),
-  });
+  // const { isLoading, data, isError, error } = useQuery({
+  //   queryKey: ["requests", page],
+  //   queryFn: () => getRequests(page, limit),
+  // });
 
-  const requests = data?.data ?? [];
-  const pagination = data?.pagination ?? {};
+  // const requests = data?.data ?? [];
   console.log(requests);
-  const { currentPage, totalPages, totalRequests } = pagination;
-  console.log('pagination = ', totalPages);
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  // const { currentPage, totalPages, totalRequests } = pagination;
+  // console.log('pagination = ', totalPages);
+  // if (isLoading) {
+  //   return <div>Loading...</div>;
+  // }
 
-  if (isError) {
-    return <div>Error: {error.message}</div>;
-  }
+  // if (isError) {
+  //   return <div>Error: {error.message}</div>;
+  // }
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-225 border-collapse">
@@ -91,20 +90,6 @@ export default function RequestTable() {
             {" "}of{" "}
             {pagination?.totalRequests} results
           </span>
-          {/* <div className="flex items-center gap-1">
-            {[1, 2, 3, 26].map((page) => (
-              <button
-                key={page}
-                className={`grid size-7 place-items-center rounded-md border text-sm font-semibold ${page === 1
-                  ? "border-blue-200 bg-blue-50 text-[#3156d8]"
-                  : "border-transparent text-slate-500 hover:bg-slate-50"
-                  }`}
-              >
-                {page}
-              </button>
-            ))}
-            <HiOutlineArrowRight size={13} />
-          </div> */}
           <div className="flex items-center gap-1">
 
             {Array.from(

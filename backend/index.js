@@ -26,8 +26,6 @@ async function startServer() {
     const reqCollection = await getDatabase().collection("requests");
     const counterCollection = getDatabase().collection("counters");
 
-
-    
     // create requests
     app.post("/api/requests", async (req, res) => {
       try {
@@ -149,7 +147,7 @@ async function startServer() {
         const requestNumber = `REQ-${currentYear}-${String(sequence).padStart(4, "0")}`;
 
         const newRequest = {
-          requestNumber,  
+          requestNumber,
           title: cleanTitle,
           description: cleanDescription,
           requesterName: cleanRequesterName,
@@ -167,7 +165,7 @@ async function startServer() {
           success: true,
           result: result,
           data: newRequest,
-          message: "Request Created Successfully"
+          message: "Request Created Successfully",
         });
       } catch (error) {
         console.error(error);
@@ -178,17 +176,15 @@ async function startServer() {
       }
     });
 
-
-    
     // get all requests
     app.get("/api/requests", async (req, res) => {
       try {
         const { search, status, priority, category, assignedPerson } =
           req.query;
         const filter = {};
-        const page = parseInt(req.query.page) || 1
-        const limit = parseInt(req.query.limit) || 10
-        const skip = (page-1)*limit;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
         const totalRequests = await reqCollection.countDocuments();
 
         // search filter
@@ -206,6 +202,9 @@ async function startServer() {
               {
                 requesterName: { $regex: searchText, $options: "i" },
               },
+              {
+                category: { $regex: searchText, $options: "i" },
+              },
             ];
           }
         }
@@ -221,7 +220,7 @@ async function startServer() {
           ];
 
           if (!statuses.includes(status)) {
-            return res.send(400).json({
+            return res.status(400).json({
               success: false,
               message: "invalid Status",
             });
@@ -296,20 +295,21 @@ async function startServer() {
           .limit(limit)
           .toArray();
 
-          const totalPages = Math.ceil(totalRequests/limit)
-          const totalFilteredRequests = await reqCollection.countDocuments(filter);
+        const totalFilteredRequests =
+          await reqCollection.countDocuments(filter);
+        const totalPages = Math.ceil(totalFilteredRequests / limit);
 
         res.status(200).json({
           success: true,
           data: requests,
           // count: requests.length,
-          count: totalFilteredRequests,
+          count: requests.length,
           pagination: {
             currentPage: page,
             limit: limit,
-            totalRequests: totalRequests,
-            totalPages: totalPages
-          }
+            totalRequests: totalFilteredRequests,
+            totalPages: totalPages,
+          },
         });
       } catch (error) {
         res.status(500).json({
@@ -321,115 +321,111 @@ async function startServer() {
 
     // get single reqest
 
-    app.get('/api/requests/:id', async(req, res) => {
+    app.get("/api/requests/:id", async (req, res) => {
       try {
-        const {id} = req.params;
+        const { id } = req.params;
 
-        if(!ObjectId.isValid(id)){
+        if (!ObjectId.isValid(id)) {
           return res.status(400).json({
-            success:false,
-            message:'invalid req id'
-          })
+            success: false,
+            message: "invalid req id",
+          });
         }
 
-        const request = await reqCollection.findOne({_id: new ObjectId(id)})
-        if(!request){
+        const request = await reqCollection.findOne({ _id: new ObjectId(id) });
+        if (!request) {
           return res.status(404).json({
-            success:false,
-            message:"request not found"
-          })
+            success: false,
+            message: "request not found",
+          });
         }
 
-        res.status(200).send(request)
-
+        res.status(200).send(request);
       } catch (error) {
         console.error(error);
         res.status(500).json({
           success: false,
-          message:
-            "Failed to get request"
+          message: "Failed to get request",
         });
       }
-    })
-
+    });
 
     // Update request
-    app.patch('/api/requests/:id', async (req, res) => {
+    app.patch("/api/requests/:id", async (req, res) => {
       try {
-        const {id} = req.params;
+        const { id } = req.params;
 
-        const {assignedPerson, status, priority} = req.body;
+        const { assignedPerson, status, priority } = req.body;
 
-        if(!ObjectId.isValid(id)){
+        if (!ObjectId.isValid(id)) {
           return res.status(400).json({
-            success:false,
-            message: "Invalid Id"
-          })
-
+            success: false,
+            message: "Invalid Id",
+          });
         }
-        const request = await reqCollection.findOne({_id: new ObjectId(id)})
+        const request = await reqCollection.findOne({ _id: new ObjectId(id) });
 
-        if(!request){
+        if (!request) {
           return res.status(404).json({
-            success:false,
-            message: 'Request not found'
-          })
+            success: false,
+            message: "Request not found",
+          });
         }
 
-
-        if(request.status === 'Closed'){
+        if (request.status === "Closed") {
           return res.status(404).json({
-            success:false,
-            message: 'Request Already Closed'
-          })
+            success: false,
+            message: "Request Already Closed",
+          });
         }
 
-        const updates = {}
+        const updates = {};
 
-        if(priority !== undefined){
-          const priorities = ['High', 'Low', 'Medium', 'Urgent']
+        if (priority !== undefined) {
+          const priorities = ["High", "Low", "Medium", "Urgent"];
 
-          if(!priorities.includes(priority)){  //validating priority
-              return res.status(400).json({
-              success:false,
-              message:'Invalid Priority'
-            })
+          if (!priorities.includes(priority)) {
+            //validating priority
+            return res.status(400).json({
+              success: false,
+              message: "Invalid Priority",
+            });
           }
 
           updates.priority = priority;
         }
 
+        if (status !== undefined) {
+          const statues = [
+            "Open",
+            "In Progress",
+            "Waiting for User",
+            "Resolved",
+            "Closed",
+          ];
 
-
-
-        if(status !== undefined){
-          const statues = ['Open', 'In Progress', 'Waiting for User', 'Resolved', 'Closed']
-
-          if(!statues.includes(status)){  //validating priority
+          if (!statues.includes(status)) {
+            //validating priority
             res.status(400).json({
-              success:false,
-              message:'Invalid Priority'
-            })
+              success: false,
+              message: "Invalid Priority",
+            });
           }
 
-          if(status === 'Closed' && request.status !== "Resolved"){
+          if (status === "Closed" && request.status !== "Resolved") {
             return res.status(400).json({
               success: false,
-              message: 'Status must be resolved before it closed'
-            })
+              message: "Status must be resolved before it closed",
+            });
           }
-
 
           updates.status = status;
         }
 
-
-        if(assignedPerson !== undefined){
-          if(assignedPerson === null){
+        if (assignedPerson !== undefined) {
+          if (assignedPerson === null) {
             updates.assignedPerson = null;
-          }
-
-          else{
+          } else {
             const supportPeople = [
               { id: "hasan", name: "Hasan Mahmud" },
               { id: "nusrat", name: "Nusrat Jahan" },
@@ -437,131 +433,126 @@ async function startServer() {
               { id: "sadia", name: "Sadia Khan" },
             ];
 
-            const person = supportPeople.find(person => person.id === assignedPerson);
+            const person = supportPeople.find(
+              (person) => person.id === assignedPerson,
+            );
 
-            if(!person){
+            if (!person) {
               return res.status(400).json({
                 success: false,
-                message: 'Invalid support person'
-              })
+                message: "Invalid support person",
+              });
             }
 
             updates.assignedPerson = {
               id: person.id,
-              name: person.name
-            }
+              name: person.name,
+            };
           }
         }
 
-        if(Object.keys(updates).length === 0){
+        if (Object.keys(updates).length === 0) {
           return res.status(400).json({
-            success:false,
-            message:'Nothing to Update'
-          })
+            success: false,
+            message: "Nothing to Update",
+          });
         }
 
         updates.updatedAt = new Date();
 
         const result = await reqCollection.updateOne(
-          {_id: new ObjectId(id)},
+          { _id: new ObjectId(id) },
           {
-            $set: updates
-          }
-        )
+            $set: updates,
+          },
+        );
 
-
-        const updatedRequest = await reqCollection.findOne({_id: new ObjectId(id)})
-
-        res.status(200).json({
-          success:true,
-          message: 'Updated Successfully',
-          data: {result, updatedRequest}
-        })
-
-
-        
-      } catch (error) {
-         console.error(error);
-          res.status(500).json({
-          success: false,
-          message:
-            "Failed to update request"
+        const updatedRequest = await reqCollection.findOne({
+          _id: new ObjectId(id),
         });
 
+        res.status(200).json({
+          success: true,
+          message: "Updated Successfully",
+          data: { result, updatedRequest },
+        });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({
+          success: false,
+          message: "Failed to update request",
+        });
       }
-    })
-
+    });
 
     // add notes
 
-    app.post('/api/requests/:id/notes', async (req, res) => {
+    app.post("/api/requests/:id/notes", async (req, res) => {
       try {
-        const {id} = req.params;
-        const {note} = req.body;
+        const { id } = req.params;
+        const { note } = req.body;
 
-        if(!ObjectId.isValid(id)){
+        if (!ObjectId.isValid(id)) {
           return res.status(400).json({
-            success:false,
-            message: 'invalid id'
-          })
+            success: false,
+            message: "invalid id",
+          });
         }
 
-        if(!note || typeof note !== 'string' || !note.trim()){
+        if (!note || typeof note !== "string" || !note.trim()) {
           return res.status(400).json({
-            success:false,
-            message: 'empty notes'
-          })
+            success: false,
+            message: "empty notes",
+          });
         }
 
         const cleanNote = note.trim();
-        const request = await reqCollection.findOne({_id: new ObjectId(id)})
+        const request = await reqCollection.findOne({ _id: new ObjectId(id) });
 
-        if(!request){
+        if (!request) {
           return res.status(400).json({
-            success:false,
-            message: 'request not found'
-          })
+            success: false,
+            message: "request not found",
+          });
         }
 
-        if(request.status === 'Closed'){
+        if (request.status === "Closed") {
           return res.status(400).json({
-            success:false,
-            message: 'Cannot add notes to closed request'
-          })
+            success: false,
+            message: "Cannot add notes to closed request",
+          });
         }
 
         const newNote = {
           _id: new ObjectId(),
           note: cleanNote,
-          createdAt: new Date()
-        }
+          createdAt: new Date(),
+        };
 
         const result = await reqCollection.updateOne(
-          {_id: new ObjectId(id)},
+          { _id: new ObjectId(id) },
           {
             $push: {
-              internalNotes: newNote
+              internalNotes: newNote,
             },
             $set: {
-              updatedAt: new Date()
-            }
-          }
-        )
+              updatedAt: new Date(),
+            },
+          },
+        );
 
         res.status(200).json({
           success: true,
-          message:'Internal notes added',
-          data: result
-        })
-
+          message: "Internal notes added",
+          data: result,
+        });
       } catch (error) {
         res.status(500).json({
-        success: false,
-        message:"Failed to add note"
-      });
+          success: false,
+          message: "Failed to add note",
+        });
       }
-    })
-
+    });
 
     app.listen(port, () => {
       console.log(`Server running at http://localhost:${port}`);

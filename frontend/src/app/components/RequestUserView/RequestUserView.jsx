@@ -14,24 +14,35 @@ import TopBar from "../TopBar";
 import { useQuery } from "@tanstack/react-query";
 import { getRequestById } from "@/services/requestApi";
 import InfoRow from "./InfoRow";
+import RequestDetailsSkeleton from "./RequestDetailsSkeleton";
 
 export default function RequestUserView({ id }) {
 
-  const {data, isLoading, isError, error} = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ['request', id],
-    queryFn:() => getRequestById(id),
+    queryFn: () => getRequestById(id),
     enabled: !!id
   })
 
+  const formatDate = (date) => {
+    if (!date) return "—";
 
-  if(isLoading) return <div>Loading</div>
+    return new Date(date).toLocaleString("en-BD", {
+      timeZone: "Asia/Dhaka",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
   return (
     <main className="min-h-screen">
       <TopBar></TopBar>
-      
-      <div className="mx-auto max-w-4xl px-4 py-6 sm:px-7">
-        
 
+      {isLoading ? <RequestDetailsSkeleton></RequestDetailsSkeleton> : <div className="mx-auto max-w-4xl px-4 py-6 sm:px-7">
         <div className="srd-card srd-shadow mt-4 overflow-hidden">
           <div className="border-b border-slate-100 px-5 py-5 sm:px-7">
             <div className="flex flex-wrap items-start justify-between gap-3">
@@ -43,7 +54,7 @@ export default function RequestUserView({ id }) {
                   <StatusBadge status={data?.status} />
                 </div>
                 <p className="mt-1 text-sm text-black/70">
-                  {data?.id} · {data?.createdAt}
+                  {data?.id} · {formatDate(data?.createdAt)}
                 </p>
               </div>
               <span className="rounded-full bg-primary/10 px-2.5 py-1 text-sm font-semibold text-primary">
@@ -81,14 +92,14 @@ export default function RequestUserView({ id }) {
                 {data?.assignedPerson ?? "Not assigned yet"}
               </InfoRow>
               <InfoRow icon={HiOutlineCalendarDays} label="Last Updated">
-                {data?.updatedAt}
+                {formatDate(data?.updatedAt)}
               </InfoRow>
-            </div>
+            </div>ut
           </div>
 
-         
+
         </div>
-      </div>
+      </div>}
     </main>
   );
 }
