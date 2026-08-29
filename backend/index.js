@@ -331,6 +331,145 @@ async function startServer() {
     })
 
 
+    // Update request
+    app.patch('/api/requests/:id', async (req, res) => {
+      try {
+        const {id} = req.params;
+
+        const {assignedPerson, status, priority} = req.body;
+
+        if(!ObjectId.isValid(id)){
+          return res.status(400).json({
+            success:false,
+            message: "Invalid Id"
+          })
+
+        }
+        const request = await reqCollection.findOne({_id: new ObjectId(id)})
+
+        if(!request){
+          return res.status(404).json({
+            success:false,
+            message: 'Request not found'
+          })
+        }
+
+
+        if(request.status === 'Closed'){
+          return res.status(404).json({
+            success:false,
+            message: 'Request Already Closed'
+          })
+        }
+
+        const updates = {}
+
+        if(priority !== undefined){
+          const priorities = ['High', 'Low', 'Medium', 'Urgent']
+
+          if(!priorities.includes(priority)){  //validating priority
+              return res.status(400).json({
+              success:false,
+              message:'Invalid Priority'
+            })
+          }
+
+          updates.priority = priority;
+        }
+
+
+
+
+        if(status !== undefined){
+          const statues = ['Open', 'In Progress', 'Waiting for User', 'Resolved', 'Closed']
+
+          if(!statues.includes(status)){  //validating priority
+            res.status(400).json({
+              success:false,
+              message:'Invalid Priority'
+            })
+          }
+
+          if(status === 'Closed' && request.status !== "Resolved"){
+            return res.status(400).json({
+              success: false,
+              message: 'Status must be resolved before it closed'
+            })
+          }
+
+
+          updates.status = status;
+        }
+
+
+        if(assignedPerson !== undefined){
+          if(assignedPerson === null){
+            updates.assignedPerson = null;
+          }
+
+          else{
+            const supportPeople = [
+              { id: "hasan", name: "Hasan Mahmud" },
+              { id: "nusrat", name: "Nusrat Jahan" },
+              { id: "raihan", name: "Raihan Ahmed" },
+              { id: "sadia", name: "Sadia Khan" },
+            ];
+
+            const person = supportPeople.find(person => person.id === assignedPerson);
+
+            if(!person){
+              return res.status(400).json({
+                success: false,
+                message: 'Invalid support person'
+              })
+            }
+
+            updates.assignedPerson = {
+              id: person.id,
+              name: person.name
+            }
+          }
+        }
+
+        if(Object.keys(updates).length === 0){
+          return res.status(400).json({
+            success:false,
+            message:'Nothing to Update'
+          })
+        }
+
+        updates.updatedAt = new Date();
+
+        const result = await reqCollection.updateOne(
+          {_id: new ObjectId(id)},
+          {
+            $set: updates
+          }
+        )
+
+
+        const updatedRequest = await reqCollection.findOne({_id: new ObjectId(id)})
+
+        res.status(200).json({
+          success:true,
+          message: 'Updated Successfully',
+          data: {result, updatedRequest}
+        })
+
+
+        
+      } catch (error) {
+         console.error(error);
+          res.status(500).json({
+          success: false,
+          message:
+            "Failed to update request"
+        });
+
+      }
+    })
+
+
 
     app.listen(port, () => {
       console.log(`Server running at http://localhost:${port}`);
