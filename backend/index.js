@@ -554,13 +554,31 @@ async function startServer() {
       }
     });
 
-    app.listen(port, () => {
-      console.log(`Server running at http://localhost:${port}`);
-    });
+    return app;
   } catch (error) {
     console.error("Could not start server:", error.message);
-    process.exit(1);
+    throw error;
   }
 }
 
-startServer();
+const serverReady = startServer();
+
+
+
+module.exports = async (req, res) => {
+  await serverReady;
+  return app(req, res);
+};
+
+if (require.main === module) {
+  serverReady
+    .then(() => {
+      app.listen(port, () => {
+        console.log(`Server running at http://localhost:${port}`);
+      });
+    })
+    .catch((error) => {
+      console.error("Could not start server:", error.message);
+      process.exit(1);
+    });
+}
