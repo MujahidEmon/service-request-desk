@@ -4,9 +4,15 @@ import ProviderShell from "../components/ProviderShell";
 import TopBar from "../components/TopBar";
 import StatCard from "../components/StatCard";
 import RequestTable from "../components/RequestTable";
+import StatusCards from "./requests/StatusCards";
 
-export default function ProviderDashboardPage() {
-  return (
+export default async function ProviderDashboardPage() {
+const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/requests/status`,{cache: "no-store"}
+  );
+
+
+  return (  
     <ProviderShell>
       <TopBar role="Support Person" />
 
@@ -16,12 +22,17 @@ export default function ProviderDashboardPage() {
           description="Here's what's happening with requests today."
         />
 
-        <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+        {/* <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
           <StatCard label="Total Requests" value="128" card='odd' />
-          <StatCard label="Open" value="32" card='even' />
+          <StatCard
+            label="Open"
+            value={stats.Open}
+            card="even"
+          />
           <StatCard label="In Progress" value="28" card='odd' />
           <StatCard label="Waiting for User" value="14"card='even' />
-        </div>
+        </div> */}
+        <StatusCards></StatusCards>
 
         <section className="srd-card srd-shadow mt-5 overflow-hidden">
             <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">

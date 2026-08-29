@@ -15,6 +15,11 @@ export const getRequestById = async (id) => {
 
   return response.data;
 };
+export const getRequestByStatus = async (status) => {
+  const response = await api.get(`/api/requests/`,{params: {status}});
+
+  return response.data;
+};
 
 
 export const updateRequest = async ({ id, data }) => {

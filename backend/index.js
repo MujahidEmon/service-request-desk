@@ -295,10 +295,13 @@ async function startServer() {
           .toArray();
 
           const totalPages = Math.ceil(totalRequests/limit)
+          const totalFilteredRequests = await reqCollection.countDocuments(filter);
 
         res.status(200).json({
           success: true,
           data: requests,
+          // count: requests.length,
+          count: totalFilteredRequests,
           pagination: {
             currentPage: page,
             limit: limit,
