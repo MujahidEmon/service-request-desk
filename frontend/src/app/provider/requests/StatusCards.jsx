@@ -53,7 +53,7 @@ export default function StatusCards() {
     );
   }
 
-  const total = results[0].data?.count ?? 0;
+  const total = results[0].data?.pagination?.totalRequests ?? 0;
   const open = results[1].data?.count ?? 0;
   const inProgress = results[2].data?.count ?? 0;
   const waitingForUser = results[3].data?.count ?? 0;
