@@ -8,7 +8,7 @@ import NoResults from "../NoResults";
 import { useQuery } from "@tanstack/react-query";
 import { getRequests } from "@/services/requestApi";
 import RequestFilterTable from "../RequestTable/RequestFilterTable";
-import RequestTableSkeleton from "../RequestTable/RequestTableSkeleton";
+import RequestTableSkeleton from "../Skeleton/RequestTableSkeleton";
 import FilterSelect from "./FilterSelect";
 
 export default function RequestFilters() {  

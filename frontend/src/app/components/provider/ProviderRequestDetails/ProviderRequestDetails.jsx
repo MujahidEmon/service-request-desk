@@ -19,6 +19,7 @@ import ModalActions from "./ModalActions";
 
 import { getRequestById, updateRequest, addNote } from "@/services/requestApi"
 import { HashLoader } from "react-spinners";
+import RequestDetailsSkeleton from "../../Skeleton/RequestDetailsSkeleton";
 
 
 export default function ProviderRequestDetails({ id }) {
@@ -178,9 +179,7 @@ export default function ProviderRequestDetails({ id }) {
   if (isLoading) {
     return (
       <ProviderShell>
-        <div className="flex min-h-[400px] items-center justify-center">
-          <HashLoader color="primary" size={25}></HashLoader>
-        </div>
+        <RequestDetailsSkeleton></RequestDetailsSkeleton>
       </ProviderShell>
     );
   }

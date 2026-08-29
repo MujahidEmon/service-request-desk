@@ -14,7 +14,7 @@ import TopBar from "../TopBar";
 import { useQuery } from "@tanstack/react-query";
 import { getRequestById } from "@/services/requestApi";
 import InfoRow from "./InfoRow";
-import RequestDetailsSkeleton from "./RequestDetailsSkeleton";
+import RequestDetailsSkeleton from "../Skeleton/RequestDetailsSkeleton";
 
 export default function RequestUserView({ id }) {
 
