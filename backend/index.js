@@ -470,6 +470,74 @@ async function startServer() {
     })
 
 
+    app.post('/api/requests/:id/notes', async (req, res) => {
+      try {
+        const {id} = req.params;
+        const {note} = req.body;
+
+        if(!ObjectId.isValid(id)){
+          return res.status(400).json({
+            success:false,
+            message: 'invalid id'
+          })
+        }
+
+        if(!note || typeof note !== 'string' || !note.trim()){
+          return res.status(400).json({
+            success:false,
+            message: 'empty notes'
+          })
+        }
+
+        const cleanNote = note.trim();
+        const request = await reqCollection.findOne({_id: new ObjectId(id)})
+
+        if(!request){
+          return res.status(400).json({
+            success:false,
+            message: 'request not found'
+          })
+        }
+
+        if(request.status === 'Closed'){
+          return res.status(400).json({
+            success:false,
+            message: 'Cannot add notes to closed request'
+          })
+        }
+
+        const newNote = {
+          _id: new ObjectId(),
+          note: cleanNote,
+          createdAt: new Date()
+        }
+
+        const result = await reqCollection.updateOne(
+          {_id: new ObjectId(id)},
+          {
+            $push: {
+              internalNotes: newNote
+            },
+            $set: {
+              updatedAt: new Date()
+            }
+          }
+        )
+
+        res.status(200).json({
+          success: true,
+          message:'Internal notes added',
+          data: result
+        })
+
+      } catch (error) {
+        res.status(500).json({
+        success: false,
+        message:"Failed to add note"
+      });
+      }
+    })
+
 
     app.listen(port, () => {
       console.log(`Server running at http://localhost:${port}`);
