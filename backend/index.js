@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:3000", 'https://service-request-desk-1o9r.vercel.app/'],
+    origin: ["http://localhost:3000", 'https://service-request-desk-1o9r.vercel.app'],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   }),
