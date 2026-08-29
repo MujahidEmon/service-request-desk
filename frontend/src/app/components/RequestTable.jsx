@@ -4,14 +4,22 @@ import { HiOutlineArrowRight } from "react-icons/hi2";
 import { PriorityBadge, StatusBadge } from "./StatusBadge";
 import { useQuery } from "@tanstack/react-query";
 import { getRequests } from "@/services/requestApi";
+import { useState } from "react";
 
 export default function RequestTable() {
-  const { isLoading, data: requests = [], isError, error } = useQuery({
-    queryKey: ['requests'],
-    queryFn: getRequests,
-  })
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
+  const { isLoading, data, isError, error } = useQuery({
+    queryKey: ["requests", page],
+    queryFn: () => getRequests(page, limit),
+  });
+
+  const requests = data?.data ?? [];
+  const pagination = data?.pagination ?? {};
   console.log(requests);
+  const { currentPage, totalPages, totalRequests } = pagination;
+  console.log('pagination = ', totalPages);
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -64,7 +72,7 @@ export default function RequestTable() {
                 <StatusBadge status={request.status} />
               </td>
               <td className="px-4 py-3 text-sm text-base-content">
-                 {request.assignedPerson?.name ?? "—"}
+                {request.assignedPerson?.name ?? "—"}
               </td>
               <td className="px-4 py-3 text-xs text-slate-500">
                 {request.updatedAt}
@@ -76,8 +84,14 @@ export default function RequestTable() {
 
       {requests.length > 0 && (
         <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-sm text-slate-500">
-          <span>Showing 1 to {requests.length} of 128 results</span>
-          <div className="flex items-center gap-1">
+          <span>
+            Showing {(page - 1) * limit + 1}
+            {" "}to{" "}
+            {Math.min(page * limit, pagination?.totalRequests)}
+            {" "}of{" "}
+            {pagination?.totalRequests} results
+          </span>
+          {/* <div className="flex items-center gap-1">
             {[1, 2, 3, 26].map((page) => (
               <button
                 key={page}
@@ -90,7 +104,28 @@ export default function RequestTable() {
               </button>
             ))}
             <HiOutlineArrowRight size={13} />
-          </div>
+          </div> */}
+          <div className="flex items-center gap-1">
+
+            {Array.from(
+              { length: pagination?.totalPages || 0 },
+              (_, index) => index + 1
+            ).map((pageNumber) => (
+
+              <button
+                key={pageNumber}
+                onClick={() => setPage(pageNumber)}
+                className={`grid size-7 place-items-center rounded-md border text-sm font-semibold ${page === pageNumber
+                    ? "border-blue-200 bg-blue-50 text-[#3156d8]"
+                    : "border-transparent text-slate-500 hover:bg-slate-50"
+                  }`}
+              >
+                {pageNumber}
+              </button>
+
+            ))}
+
+          </div>  
         </div>
       )}
     </div>

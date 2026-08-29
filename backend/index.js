@@ -184,6 +184,10 @@ async function startServer() {
         const { search, status, priority, category, assignedPerson } =
           req.query;
         const filter = {};
+        const page = parseInt(req.query.page) || 1
+        const limit = parseInt(req.query.limit) || 10
+        const skip = (page-1)*limit;
+        const totalRequests = await reqCollection.countDocuments();
 
         // search filter
         if (search) {
@@ -286,9 +290,22 @@ async function startServer() {
         const requests = await reqCollection
           .find(filter)
           .sort({ updatedAt: -1 })
+          .skip(skip)
+          .limit(limit)
           .toArray();
 
-        res.status(200).send(requests);
+          const totalPages = Math.ceil(totalRequests/limit)
+
+        res.status(200).json({
+          success: true,
+          data: requests,
+          pagination: {
+            currentPage: page,
+            limit: limit,
+            totalRequests: totalRequests,
+            totalPages: totalPages
+          }
+        });
       } catch (error) {
         res.status(500).json({
           success: false,
@@ -469,6 +486,8 @@ async function startServer() {
       }
     })
 
+
+    // add notes
 
     app.post('/api/requests/:id/notes', async (req, res) => {
       try {
