@@ -80,39 +80,6 @@ export default function RequestFilterTable({ pagination, requests }) {
           ))}
         </tbody>
       </table>
-
-      {requests.length > 0 && (
-        <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-sm text-slate-500">
-          <span>
-            Showing {(page - 1) * limit + 1}
-            {" "}to{" "}
-            {Math.min(page * limit, pagination?.totalRequests)}
-            {" "}of{" "}
-            {pagination?.totalRequests} results
-          </span>
-          <div className="flex items-center gap-1">
-
-            {Array.from(
-              { length: pagination?.totalPages || 0 },
-              (_, index) => index + 1
-            ).map((pageNumber) => (
-
-              <button
-                key={pageNumber}
-                onClick={() => setPage(pageNumber)}
-                className={`grid size-7 place-items-center rounded-md border text-sm font-semibold ${page === pageNumber
-                    ? "border-blue-200 bg-blue-50 text-[#3156d8]"
-                    : "border-transparent text-slate-500 hover:bg-slate-50"
-                  }`}
-              >
-                {pageNumber}
-              </button>
-
-            ))}
-
-          </div>  
-        </div>
-      )}
     </div>
   );
 }

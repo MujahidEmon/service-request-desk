@@ -11,7 +11,7 @@ import RequestFilterTable from "../RequestTable/RequestFilterTable";
 import RequestTableSkeleton from "../Skeleton/RequestTableSkeleton";
 import FilterSelect from "./FilterSelect";
 
-export default function RequestFilters() {  
+export default function RequestFilters() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
   const [priority, setPriority] = useState("");
@@ -34,7 +34,7 @@ export default function RequestFilters() {
       "requests",
       page,
       filters,
-    ],  
+    ],
     queryFn: () => getRequests(page, limit, filters),
     // placeholderData: (previousData) => previousData,
   });
@@ -165,6 +165,33 @@ export default function RequestFilters() {
           </div>
         </div>
       )} */}
+      {pagination && pagination.totalPages > 1 && (
+        <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3">
+          <p className="text-sm text-slate-500">
+            Showing {(page - 1) * limit + 1} to{" "}
+            {Math.min(page * limit, pagination.totalRequests)} of{" "}
+            {pagination.totalRequests} results
+          </p>
+
+          <div className="flex items-center gap-1">
+            {Array.from(
+              { length: pagination.totalPages },
+              (_, index) => index + 1
+            ).map((pageNumber) => (
+              <button
+                key={pageNumber}
+                onClick={() => setPage(pageNumber)}
+                className={`grid size-7 place-items-center rounded-md border text-sm font-semibold ${page === pageNumber
+                    ? "border-blue-200 bg-blue-50 text-[#3156d8]"
+                    : "border-transparent text-slate-500 hover:bg-slate-50"
+                  }`}
+              >
+                {pageNumber}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </>
   );
 }
