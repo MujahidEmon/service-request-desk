@@ -1,8 +1,24 @@
+'use client'
 import Link from "next/link";
 import { HiOutlineArrowRight } from "react-icons/hi2";
 import { PriorityBadge, StatusBadge } from "./StatusBadge";
+import { useQuery } from "@tanstack/react-query";
+import { getRequests } from "@/services/requestApi";
 
-export default function RequestTable({ requests }) {
+export default function RequestTable() {
+  const { isLoading, data: requests = [], isError, error } = useQuery({
+    queryKey: ['requests'],
+    queryFn: getRequests,
+  })
+
+  console.log(requests);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error: {error.message}</div>;
+  }
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-225 border-collapse">
@@ -23,13 +39,13 @@ export default function RequestTable({ requests }) {
         <tbody>
           {requests.map((request) => (
             <tr
-              key={request.id}
+              key={request._id}
               className="border-b border-slate-50 transition hover:bg-slate-50/80"
             >
               <td className="px-4 py-3 text-[10px] text-slate-800">•</td>
               <td className="px-4 py-3">
                 <Link
-                  href={`/provider/requests/${request.id}`}
+                  href={`/provider/requests/${request._id}`}
                   className="text-sm font-semibold text-slate-800 hover:text-[#3156d8]"
                 >
                   {request.title}
@@ -48,7 +64,7 @@ export default function RequestTable({ requests }) {
                 <StatusBadge status={request.status} />
               </td>
               <td className="px-4 py-3 text-sm text-base-content">
-                {request.assignedPerson ?? "—"}
+                 {request.assignedPerson?.name ?? "—"}
               </td>
               <td className="px-4 py-3 text-xs text-slate-500">
                 {request.updatedAt}
@@ -65,11 +81,10 @@ export default function RequestTable({ requests }) {
             {[1, 2, 3, 26].map((page) => (
               <button
                 key={page}
-                className={`grid size-7 place-items-center rounded-md border text-sm font-semibold ${
-                  page === 1
-                    ? "border-blue-200 bg-blue-50 text-[#3156d8]"
-                    : "border-transparent text-slate-500 hover:bg-slate-50"
-                }`}
+                className={`grid size-7 place-items-center rounded-md border text-sm font-semibold ${page === 1
+                  ? "border-blue-200 bg-blue-50 text-[#3156d8]"
+                  : "border-transparent text-slate-500 hover:bg-slate-50"
+                  }`}
               >
                 {page}
               </button>

@@ -4,7 +4,6 @@ import ProviderShell from "../components/ProviderShell";
 import TopBar from "../components/TopBar";
 import StatCard from "../components/StatCard";
 import RequestTable from "../components/RequestTable";
-import { requests } from "@/lib/data";
 
 export default function ProviderDashboardPage() {
   return (
@@ -36,7 +35,7 @@ export default function ProviderDashboardPage() {
                 View All Requests
               </Link>
             </div>
-            <RequestTable requests={requests} />
+            <RequestTable/>
           </section>
       </div>
     </ProviderShell>
