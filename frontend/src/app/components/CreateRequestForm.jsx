@@ -4,6 +4,9 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { HiOutlinePaperAirplane } from "react-icons/hi2";
 import { categories,priorities } from "@/lib/data";
+import { useMutation } from "@tanstack/react-query";
+import { createRequest } from "@/services/requestApi";
+import toast from "react-hot-toast";
 
 export default function CreateRequestForm() {
   const router = useRouter();
@@ -23,12 +26,22 @@ export default function CreateRequestForm() {
     },
   });
 
-  const onSubmit = async (data) => {
-    // UI-only for now. Replace this with POST /api/requests later.
-    await new Promise((resolve) => setTimeout(resolve, 500));
 
-    const id = "REQ-2026-0001";
-    router.push(`/request-submitted?id=${id}`);
+  const createRequestMutate = useMutation({
+    mutationFn: createRequest,
+    onSuccess: (result) => {
+      toast.success("Your Request is Submitted");
+      const requestId = result?.data?._id;
+      router.push(`/request-submitted?id=${requestId}`)
+    },
+    onError: (error) => {
+      console.error("Create request failed:", error);
+      toast.error("Failed to submit Request. Try later")
+    }
+  })
+
+  const onSubmit = async (data) => {
+     createRequestMutate.mutate(data);
   };
 
   return (

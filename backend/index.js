@@ -163,9 +163,11 @@ async function startServer() {
         };
 
         const result = await reqCollection.insertOne(newRequest);
-        res.send(result, {
-          message: "Request Created Successfully",
-          status: 201,
+        res.status(200).json({
+          success: true,
+          result: result,
+          data: newRequest,
+          message: "Request Created Successfully"
         });
       } catch (error) {
         console.error(error);
@@ -327,7 +329,7 @@ async function startServer() {
           return res.status(400).json({
             success:false,
             message:'invalid req id'
-          })  
+          })
         }
 
         const request = await reqCollection.findOne({_id: new ObjectId(id)})

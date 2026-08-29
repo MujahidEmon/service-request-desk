@@ -32,6 +32,11 @@ export const updateRequest = async ({ id, data }) => {
 };
 
 
+export const createRequest = async(data) => {
+  const response = await api.post('/api/requests',data)
+  return response.data;
+}
+
 // Add internal note
 export const addNote = async ({ id, note }) => {
   const response = await api.post(

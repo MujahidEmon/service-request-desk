@@ -1,4 +1,4 @@
-import RequestUserView from "@/app/components/RequestUserView";
+import RequestUserView from "@/app/components/RequestUserView/RequestUserView";
 
 
 export default async function RequestPage({ params }) {
