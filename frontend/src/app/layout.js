@@ -1,8 +1,7 @@
 import { Geist, Geist_Mono, Quicksand } from "next/font/google";
 import "./globals.css";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
 import QueryProvider from "@/providers/QueryProvider";
-
 
 const quickSand = Quicksand({
   subsets: ["latin"],
@@ -10,17 +9,83 @@ const quickSand = Quicksand({
 });
 
 export const metadata = {
-  title:{
-    default: "Service Request Desk",
+  metadataBase: new URL("https://your-domain.com"),
+
+  title: {
+    default: "Service Request Desk | Submit, Track & Manage Requests",
     template: "%s | Service Request Desk",
-  } ,
-  description: `Service Request Desk is a web application that allows users to submit and manage service requests. It provides a user-friendly interface for requesters to create new requests, track their status, and communicate with the support team. The application also enables support agents to efficiently handle incoming requests, assign tasks, and provide timely updates to requesters. With its intuitive design and robust features, Service Request Desk streamlines the service request process, ensuring a seamless experience for both requesters and support agents.
-  Key Features:
-  - Request Submission: Requesters can easily submit service requests by providing relevant details such as title, description, category, and priority.
-  - Request Tracking: Requesters can track the status of their submitted requests, view updates, and communicate with support agents.
-  - Support Agent Management: Support agents can efficiently manage incoming requests, assign tasks, and provide timely responses to requesters.
-  - User-Friendly Interface: The application offers an intuitive and visually appealing interface for both requesters and support agents.
-  - Notifications: Users receive notifications for important updates regarding their requests, ensuring they stay informed throughout the process.`,  
+  },
+
+  description:
+    "Service Request Desk is a modern service request management platform for submitting, tracking, assigning, and resolving service requests efficiently.",
+
+  keywords: [
+    "Service Request Desk",
+    "service request management",
+    "service desk",
+    "request management system",
+    "IT service desk",
+    "support ticket system",
+    "service request tracking",
+    "support request management",
+    "ticket management system",
+    "request tracking",
+  ],
+
+  authors: [
+    {
+      name: "Service Request Desk",
+    },
+  ],
+
+  creator: "Service Request Desk",
+  publisher: "Service Request Desk",
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://your-domain.com",
+    siteName: "Service Request Desk",
+    title: "Service Request Desk | Submit, Track & Manage Requests",
+    description:
+      "Submit, track, and manage service requests with Service Request Desk. Requesters can create and track requests while support agents manage, assign, and resolve them efficiently.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Service Request Desk",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Service Request Desk | Submit, Track & Manage Requests",
+    description:
+      "A modern service request management platform for submitting, tracking, assigning, and resolving service requests.",
+    images: ["/og-image.png"],
+  },
+
+  icons: {
+    icon: "/favicon.ico",
+  },
+
+  alternates: {
+    canonical: "https://your-domain.com",
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -29,7 +94,10 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${quickSand.className} h-full bg-custom-1 antialiased`}
     >
-      <body className="min-h-full flex flex-col"><QueryProvider>{children}</QueryProvider><Toaster /></body>
+      <body className="min-h-full flex flex-col">
+        <QueryProvider>{children}</QueryProvider>
+        <Toaster />
+      </body>
     </html>
   );
 }

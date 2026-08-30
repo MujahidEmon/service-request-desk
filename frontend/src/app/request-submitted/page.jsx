@@ -1,6 +1,11 @@
 import { Suspense } from "react";
 import SubmissionSuccess from "../components/SubmissionSuccess";
 import TopBar from "../components/TopBar";
+export const metadata = {
+  title: "Request Submitted Successfully",
+  description:
+    "Your service request has been submitted successfully. Save your request number to track its status and view future updates.",
+};
 
 function Loading() {
   return (

@@ -5,6 +5,12 @@ import TopBar from "../components/TopBar";
 import RequestTable from "../components/RequestTable/RequestTable";
 import StatusCards from "./requests/StatusCards";
 
+export const metadata = {
+  title: "Support Dashboard",
+  description:
+    "Manage service requests from the support dashboard. Monitor request status, priorities, assignments, and incoming support requests.",
+};
+
 export default async function ProviderDashboardPage() {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/requests?page=1&limit=5`,

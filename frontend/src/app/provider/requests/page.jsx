@@ -4,6 +4,11 @@ import RequestFilters from "@/app/components/RequestFilter/RequestFilters";
 import TopBar from "@/app/components/TopBar";
 import Link from "next/link";
 import { HiOutlineArrowLeft } from "react-icons/hi2";
+export const metadata = {
+  title: "All Service Requests",
+  description:
+    "View and manage all service requests in one place. Filter requests by status, priority, category, and other criteria to handle support tasks efficiently.",
+};
 
 
 export default function ProviderRequestsPage() {
