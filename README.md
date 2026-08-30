@@ -166,9 +166,11 @@ cannot simply be closed before reaching the resolved state.
 -   **Next.js**
 -   **React**
 -   **Tailwind CSS**
+-   **React Hook Form**
 -   **Axios**
 -   **React Icons**
 -   **React Spinners**
+-   **React Hot Toast**
 
 ### Backend
 
@@ -353,7 +355,7 @@ instead of relying only on frontend validation.
 ### 1. Clone the repository
 
 ``` bash
-git clone <your-github-repository-url>
+git clone https://github.com/MujahidEmon/service-request-desk
 cd service-request-desk
 ```
 

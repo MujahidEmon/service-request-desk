@@ -31,7 +31,7 @@ export default async function ProviderDashboardPage() {
 
         <section className="srd-card srd-shadow mt-5 overflow-hidden">
           <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
-            <div>
+            <div className="">
               <h2 className="text-md font-extrabold text-slate-900">
                 Recent Requests
               </h2>
@@ -43,7 +43,7 @@ export default async function ProviderDashboardPage() {
 
             <Link
               href="/provider/requests"
-              className="srd-primary-button h-8"
+              className="btn btn-primary h-8"
             >
               View All Requests
             </Link>

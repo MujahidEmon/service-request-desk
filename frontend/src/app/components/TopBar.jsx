@@ -11,9 +11,9 @@ export default function TopBar({ role = "Requester" }) {
           <HiOutlineArrowLeft size={15} />
           Back to Home
         </Link> */}
-        <Link href={'/'} className="font-bold text-primary md:text-xl text-lg hover:text-black">Service Request Desk</Link>
-      <button className="flex bg-primary/10 items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-semibold text-slate-700">
-        <HiOutlineUserCircle size={23} className="text-slate-500" />
+      <Link href={'/'} className="font-bold text-primary md:text-xl text-md hover:text-black">Service Request Desk</Link>
+      <button className="srd-secondary-button">
+        <HiOutlineUserCircle size={21} className="text-slate-500" />
         {role}
       </button>
     </div>
