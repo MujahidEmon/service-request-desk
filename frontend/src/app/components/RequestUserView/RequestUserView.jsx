@@ -94,7 +94,7 @@ export default function RequestUserView({ id }) {
               <InfoRow icon={HiOutlineCalendarDays} label="Last Updated">
                 {formatDate(data?.updatedAt)}
               </InfoRow>
-            </div>ut
+            </div>
           </div>
 
 

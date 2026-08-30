@@ -6,7 +6,19 @@ export default function RequestTable({requests = []}) {
 
   // console.log(requests);
   
+const formatDate = (date) => {
+    if (!date) return "—";
 
+    return new Date(date).toLocaleString("en-BD", {
+      timeZone: "Asia/Dhaka",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
   
   return (
     <div className="overflow-x-auto">
@@ -56,7 +68,7 @@ export default function RequestTable({requests = []}) {
                 {request.assignedPerson?.name ?? "—"}
               </td>
               <td className="px-4 py-3 text-xs text-slate-500">
-                {request.updatedAt}
+                {formatDate(request.updatedAt)}
               </td>
             </tr>
           ))}

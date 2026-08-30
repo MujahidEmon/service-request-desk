@@ -10,22 +10,19 @@ export default function RequestFilterTable({ pagination, requests }) {
   const [page, setPage] = useState(1);
   const limit = 10;
 
-  // const { isLoading, data, isError, error } = useQuery({
-  //   queryKey: ["requests", page],
-  //   queryFn: () => getRequests(page, limit),
-  // });
+  const formatDate = (date) => {
+    if (!date) return "—";
 
-  // const requests = data?.data ?? [];
-  // console.log(requests);
-  // const { currentPage, totalPages, totalRequests } = pagination;
-  // console.log('pagination = ', totalPages);
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (isError) {
-  //   return <div>Error: {error.message}</div>;
-  // }
+    return new Date(date).toLocaleString("en-BD", {
+      timeZone: "Asia/Dhaka",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-225 border-collapse">
@@ -74,7 +71,7 @@ export default function RequestFilterTable({ pagination, requests }) {
                 {request.assignedPerson?.name ?? "—"}
               </td>
               <td className="px-4 py-3 text-xs text-slate-500">
-                {request.updatedAt}
+                {formatDate(request.updatedAt)}
               </td>
             </tr>
           ))}
