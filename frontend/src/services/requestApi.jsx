@@ -1,10 +1,6 @@
 import api from "@/lib/axios";
 
 export const getRequests = async (page = 1, limit = 10, filters = {}) => {
-  console.log("🔥 getRequests CALLED");
-  console.log("PAGE:", page);
-  console.log("LIMIT:", limit);
-  console.log("FILTERS:", filters);
 
   const response = await api.get("/api/requests", {
     params: {
@@ -13,8 +9,6 @@ export const getRequests = async (page = 1, limit = 10, filters = {}) => {
       ...filters,
     },
   });
-
-  console.log("🔥 API RESPONSE:", response.data);
 
   return response.data;
 };

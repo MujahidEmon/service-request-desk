@@ -4,7 +4,7 @@ import { HiOutlineArrowRight } from "react-icons/hi2";
 import { PriorityBadge, StatusBadge } from "../StatusBadge";
 export default function RequestTable({requests = []}) {
 
-  console.log(requests);
+  // console.log(requests);
   
 
   

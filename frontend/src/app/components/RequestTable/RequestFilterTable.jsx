@@ -16,7 +16,7 @@ export default function RequestFilterTable({ pagination, requests }) {
   // });
 
   // const requests = data?.data ?? [];
-  console.log(requests);
+  // console.log(requests);
   // const { currentPage, totalPages, totalRequests } = pagination;
   // console.log('pagination = ', totalPages);
   // if (isLoading) {
